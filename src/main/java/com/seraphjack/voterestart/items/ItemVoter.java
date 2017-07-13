@@ -17,7 +17,8 @@ public class ItemVoter extends Item{
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        VoteRestart.vote(player,world);
+        if(!world.isRemote)
+            VoteRestart.vote(player,world);
         return stack;
     }
 }
