@@ -17,7 +17,7 @@ public class ItemVoter extends Item{
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        VoteRestart.vote(player);
+        VoteRestart.vote(player,world);
         return stack;
     }
 }

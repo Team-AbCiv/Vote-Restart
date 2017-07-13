@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = VoteRestart.MODID,version = VoteRestart.VERSION,name = VoteRestart.NAME)
@@ -41,7 +43,11 @@ public class VoteRestart {
         new CraftingLoader();
     }
 
-    public static void vote(EntityPlayer player){
+    public static void vote(EntityPlayer player, World world){
+        if(player instanceof FakePlayer){
+            server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation("Do not use right clicker to vote!"));
+            return;
+        }
         int i;
         for(i=0; voteList[i]!=null; i++){
             if(player.getGameProfile().getName().equals(voteList[i])){
@@ -53,7 +59,9 @@ public class VoteRestart {
         }
         voteList[i] = player.getGameProfile().getName();
         votes++;
-        String info = player.getGameProfile().getName()+ StatCollector.translateToLocal("voterestart.info.display0")+votes+StatCollector.translateToLocal("voterestart.info.display1")+server.getCurrentPlayerCount()+StatCollector.translateToLocal("voterestart.info.display2");
+        String info = player.getGameProfile().getName()+StatCollector.translateToLocal("voterestart.info.display0")
+                +votes+StatCollector.translateToLocal("voterestart.info.display1")
+                +server.getCurrentPlayerCount()+StatCollector.translateToLocal("voterestart.info.display2");
         logger.info(info);
         server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info));
         if(votes >= server.getCurrentPlayerCount()*ConfigLoader.votes)
