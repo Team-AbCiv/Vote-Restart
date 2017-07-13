@@ -46,6 +46,7 @@ public class VoteRestart {
     public static void vote(EntityPlayer player, World world){
         if(player instanceof FakePlayer){
             server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation("Do not use right clicker to vote!"));
+            player.clearItemInUse();
             return;
         }
         int i;
