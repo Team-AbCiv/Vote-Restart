@@ -1,0 +1,16 @@
+[
+{
+  "modid": "voterestart",
+  "name": "VoteRestart",
+  "description": "Vote to restart.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["SeraphJACK"],
+  "credits": "For Tranquility.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
