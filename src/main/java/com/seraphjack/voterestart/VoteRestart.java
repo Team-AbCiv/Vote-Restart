@@ -49,21 +49,15 @@ public class VoteRestart {
             player.clearItemInUse();
             return;
         }
-        int i = 0;
-        try {
-            for (i = 0; voteList[i] != null; i++) {
-                if (player.getGameProfile().getName().equals(voteList[i])) {
-                    player.addChatMessage(new ChatComponentTranslation("You have already voted!!!"));
-                    if (votes >= server.getCurrentPlayerCount() * ConfigLoader.votes)
-                        server.stopServer();
-                    return;
-                }
+
+        int i;
+        for (i = 0; voteList[i] != null; i++) {
+            if (player.getGameProfile().getName().equals(voteList[i])) {
+                player.addChatMessage(new ChatComponentTranslation("You have already voted!!!"));
+                if (votes >= server.getCurrentPlayerCount()*ConfigLoader.votes)
+                    server.stopServer();
+                return;
             }
-        }
-        catch(ArrayIndexOutOfBoundsException e){
-            voteList = new String[server.getMaxPlayers()];
-            i=0;
-            votes=0;
         }
 
         voteList[i] = player.getGameProfile().getName();
