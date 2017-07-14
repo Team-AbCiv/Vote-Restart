@@ -64,10 +64,12 @@ public class VoteRestart {
         votes++;
         String info = player.getGameProfile().getName()+StatCollector.translateToLocal("voterestart.info.display0")
                 +votes+StatCollector.translateToLocal("voterestart.info.display1")
-                +server.getCurrentPlayerCount()+StatCollector.translateToLocal("voterestart.info.display2");
+                +server.getCurrentPlayerCount()+StatCollector.translateToLocal("voterestart.info.display2")
+                +StatCollector.translateToLocal("voterestart.info.display3")+ConfigLoader.votes*100+("%")
+                +StatCollector.translateToLocal("voterestart.info.display4");
         logger.info(info);
         server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info));
-        if(votes >= server.getCurrentPlayerCount()*ConfigLoader.votes)
+        if(votes >= Math.ceil(server.getCurrentPlayerCount()*ConfigLoader.votes))
             server.stopServer();
     }
 }

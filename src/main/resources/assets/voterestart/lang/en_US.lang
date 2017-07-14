@@ -1,4 +1,6 @@
 item.item_voter.name=Voter
-voterestart.info.display0= has voted to restart. Now there is(are)
+voterestart.info.display0= has voted to restart. Now there is
 voterestart.info.display1= votes,
 voterestart.info.display2= players online.
+voterestart.info.display3=If votes goes to
+voterestart.info.display4= of online players,we'll restart the server.

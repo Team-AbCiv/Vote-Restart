@@ -2,3 +2,5 @@ item.item_voter.name=投票器
 voterestart.info.display0= 投票重启。现在一共有
 voterestart.info.display1= 个投票，有
 voterestart.info.display2= 个玩家在线。
+voterestart.info.display3=如果有
+voterestart.info.display4=的在线玩家同意重启，我们就会重启服务器。
