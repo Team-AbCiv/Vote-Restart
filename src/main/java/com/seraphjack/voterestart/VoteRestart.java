@@ -41,6 +41,7 @@ public class VoteRestart {
     @Mod.EventHandler
     public void init(FMLInitializationEvent e){
         new CraftingLoader();
+        new AchievementLoader();
     }
 
     public static void vote(EntityPlayer player, World world){
@@ -54,7 +55,7 @@ public class VoteRestart {
         for (i = 0; voteList[i] != null; i++) {
             if (player.getGameProfile().getName().equals(voteList[i])) {
                 player.addChatMessage(new ChatComponentTranslation("You have already voted!!!"));
-                if (votes >= server.getCurrentPlayerCount()*ConfigLoader.votes)
+                if (votes >= Math.ceil((double)server.getCurrentPlayerCount()*ConfigLoader.votes))
                     server.stopServer();
                 return;
             }
@@ -64,12 +65,13 @@ public class VoteRestart {
         votes++;
         String info = player.getGameProfile().getName()+StatCollector.translateToLocal("voterestart.info.display0")
                 +votes+StatCollector.translateToLocal("voterestart.info.display1")
-                +server.getCurrentPlayerCount()+StatCollector.translateToLocal("voterestart.info.display2")
-                +StatCollector.translateToLocal("voterestart.info.display3")+ConfigLoader.votes*100+("%")
-                +StatCollector.translateToLocal("voterestart.info.display4");
+                +server.getCurrentPlayerCount()+StatCollector.translateToLocal("voterestart.info.display2");
+        String info2 = StatCollector.translateToLocal("voterestart.info.display3")
+                +(int)Math.ceil((double)server.getCurrentPlayerCount()*ConfigLoader.votes)+StatCollector.translateToLocal("voterestart.info.display4");
         logger.info(info);
         server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info));
-        if(votes >= Math.ceil(server.getCurrentPlayerCount()*ConfigLoader.votes))
+        server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info2));
+        if(votes >= Math.ceil((double)server.getCurrentPlayerCount()*ConfigLoader.votes))
             server.stopServer();
     }
 }

@@ -1,5 +1,6 @@
 package com.seraphjack.voterestart.items;
 
+import com.seraphjack.voterestart.AchievementLoader;
 import com.seraphjack.voterestart.VoteRestart;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +18,10 @@ public class ItemVoter extends Item{
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if(!world.isRemote)
-            VoteRestart.vote(player,world);
+        if(!world.isRemote) {
+            VoteRestart.vote(player, world);
+            player.triggerAchievement(AchievementLoader.saltyfish);
+        }
         return stack;
     }
 }
