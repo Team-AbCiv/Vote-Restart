@@ -5,8 +5,9 @@ import net.minecraft.item.Item;
 
 public class ItemLoader {
     public static Item itemVoter;
-    public ItemLoader(){
+
+    public ItemLoader() {
         itemVoter = new ItemVoter();
-        GameRegistry.registerItem(itemVoter,"item_voter");
+        GameRegistry.registerItem(itemVoter, "item_voter");
     }
 }

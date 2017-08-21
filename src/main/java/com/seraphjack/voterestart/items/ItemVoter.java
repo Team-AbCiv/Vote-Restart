@@ -8,17 +8,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemVoter extends Item{
-    public ItemVoter(){
+public class ItemVoter extends Item {
+    public ItemVoter() {
         setCreativeTab(CreativeTabs.tabTools);
         setUnlocalizedName("item_voter");
-        setTextureName(VoteRestart.MODID+":item_voter");
+        setTextureName(VoteRestart.MODID + ":item_voter");
         setMaxStackSize(1);
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if(!world.isRemote) {
+        if (!world.isRemote) {
             VoteRestart.vote(player, world);
             player.triggerAchievement(AchievementLoader.saltyfish);
         }

@@ -6,3 +6,4 @@ voterestart.info.display2= 个玩家在线。
 voterestart.info.display3=重启票数:
 voterestart.info.display4=票
 achievement.voterestart.saltyfish.desc=来自咸鱼的神秘力量。
+voterestart.stopInfo=服务器将在%d秒后重启。
