@@ -7,3 +7,4 @@ voterestart.info.display4=votes
 achievement.voterestart.saltyfish=Summon Salty Fish!
 achievement.voterestart.saltyfish.desc=A strange force from Salty Fish.
 voterestart.stopInfo=Server will restart in %d seconds.
+voterestart.alreadyVoted=You have already voted!!

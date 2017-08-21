@@ -23,6 +23,7 @@ public class VoteRestart {
     private static int votes;
     private static String voteList[];
     private static MinecraftServer server;
+    private static boolean isRestarting = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
@@ -47,7 +48,6 @@ public class VoteRestart {
 
     public static void vote(EntityPlayer player, World world) {
         if (player instanceof FakePlayer) {
-            server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation("Do not use right clicker to vote!"));
             player.clearItemInUse();
             return;
         }
@@ -55,9 +55,9 @@ public class VoteRestart {
         int i;
         for (i = 0; voteList[i] != null; i++) {
             if (player.getGameProfile().getName().equals(voteList[i])) {
-                player.addChatMessage(new ChatComponentTranslation("You have already voted!!!"));
-                if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes))
-                    server.stopServer();
+                player.addChatMessage(new ChatComponentTranslation(I18n.format("voterestart.alreadyVoted")));
+                if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes) && !isRestarting)
+                    restartServer();
                 return;
             }
         }
@@ -72,22 +72,27 @@ public class VoteRestart {
         logger.info(info);
         server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info));
         server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info2));
-        if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes)){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    int i=10;
-                    for(;i>=0;i--){
-                        server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(I18n.format("voterestart.stopInfo",i)));
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    server.stopServer();
-                }
-            }).start();
+        if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes) && !isRestarting) {
+            restartServer();
         }
+    }
+
+    private static void restartServer() {
+        isRestarting = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i = 10;
+                for (; i >= 0; i--) {
+                    server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(I18n.format("voterestart.stopInfo", i)));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                server.stopServer();
+            }
+        }).start();
     }
 }
