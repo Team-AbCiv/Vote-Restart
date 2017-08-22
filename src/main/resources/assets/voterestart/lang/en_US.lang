@@ -1,4 +1,5 @@
 item.item_voter.name=Voter
+item.item_voter.tooltip=Right click to vote,sneak and right click to devote
 voterestart.info.display0= has voted to restart. Now there is
 voterestart.info.display1= votes,
 voterestart.info.display2= players online.
@@ -8,4 +9,4 @@ achievement.voterestart.saltyfish=Summon Salty Fish!
 achievement.voterestart.saltyfish.desc=A strange force from Salty Fish.
 voterestart.stopInfo=Server will restart in %d seconds.
 voterestart.alreadyVoted=You have already voted!!
-voterestart.devoteInfo=%s has left the game,now %d votes left.
+voterestart.devoteInfo=%s has devoted, now %d votes left.

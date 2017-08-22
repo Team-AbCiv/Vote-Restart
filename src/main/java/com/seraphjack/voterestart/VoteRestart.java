@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import org.apache.logging.log4j.Logger;
 
@@ -50,7 +49,7 @@ public class VoteRestart {
         new EventLoader();
     }
 
-    public static void vote(EntityPlayer player, World world) {
+    public static void vote(EntityPlayer player) {
         if (player instanceof FakePlayer) {
             player.clearItemInUse();
             return;

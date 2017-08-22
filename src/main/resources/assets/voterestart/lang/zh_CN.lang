@@ -1,4 +1,5 @@
 item.item_voter.name=投票器
+item.item_voter.tooltip=右键投票，Shift右键取消投票
 achievement.voterestart.saltyfish=召唤咸鱼！
 voterestart.info.display0= 想要重启服务器，并投了一票，现在一共有
 voterestart.info.display1= 票，有
@@ -8,4 +9,4 @@ voterestart.info.display4=票
 achievement.voterestart.saltyfish.desc=来自咸鱼的神秘力量。
 voterestart.stopInfo=服务器将在%d秒后重启。
 voterestart.alreadyVoted=你已经投过票了！！
-voterestart.devoteInfo=%s 离开了游戏，现在还有%d票。
+voterestart.devoteInfo=%s 取消了投票，现在还有%d票。
