@@ -1,11 +1,11 @@
 package com.seraphjack.voterestart;
 
+import com.seraphjack.voterestart.event.EventLoader;
 import com.seraphjack.voterestart.items.ItemLoader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
@@ -14,6 +14,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import org.apache.logging.log4j.Logger;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Mod(modid = VoteRestart.MODID, version = VoteRestart.VERSION, name = VoteRestart.NAME)
 public class VoteRestart {
     public static final String MODID = "voterestart";
@@ -21,7 +24,7 @@ public class VoteRestart {
     public static final String NAME = "VoteRestart";
     private static Logger logger;
     private static int votes;
-    private static String voteList[];
+    private static List<String> voteList;
     private static MinecraftServer server;
     private static boolean isRestarting = false;
 
@@ -37,13 +40,14 @@ public class VoteRestart {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent e) {
         server = e.getServer();
-        voteList = new String[server.getMaxPlayers()];
+        voteList = new LinkedList<String>();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         new CraftingLoader();
         new AchievementLoader();
+        new EventLoader();
     }
 
     public static void vote(EntityPlayer player, World world) {
@@ -53,16 +57,16 @@ public class VoteRestart {
         }
 
         int i;
-        for (i = 0; voteList[i] != null; i++) {
-            if (player.getGameProfile().getName().equals(voteList[i])) {
-                player.addChatMessage(new ChatComponentTranslation(I18n.format("voterestart.alreadyVoted")));
+        for (i = 0; i < voteList.size(); i++) {
+            if (player.getGameProfile().getName().equals(voteList.get(i))) {
+                player.addChatMessage(new ChatComponentTranslation(StatCollector.translateToLocal("voterestart.alreadyVoted")));
                 if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes) && !isRestarting)
                     restartServer();
                 return;
             }
         }
 
-        voteList[i] = player.getGameProfile().getName();
+        voteList.add(player.getGameProfile().getName());
         votes++;
         String info = player.getGameProfile().getName() + StatCollector.translateToLocal("voterestart.info.display0")
                 + votes + StatCollector.translateToLocal("voterestart.info.display1")
@@ -84,7 +88,7 @@ public class VoteRestart {
             public void run() {
                 int i = 10;
                 for (; i >= 0; i--) {
-                    server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(I18n.format("voterestart.stopInfo", i)));
+                    server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.stopInfo", i)));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -94,5 +98,17 @@ public class VoteRestart {
                 server.stopServer();
             }
         }).start();
+    }
+
+    public static void deVote(EntityPlayer player) {
+        if (isRestarting)
+            return;
+        for (int i = 0; i < voteList.size(); i++) {
+            if (voteList.get(i).equals(player.getGameProfile().getName())) {
+                votes--;
+                voteList.remove(i);
+                server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.devoteInfo", player.getGameProfile().getName(), votes)));
+            }
+        }
     }
 }

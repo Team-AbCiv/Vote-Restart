@@ -8,3 +8,4 @@ voterestart.info.display4=票
 achievement.voterestart.saltyfish.desc=来自咸鱼的神秘力量。
 voterestart.stopInfo=服务器将在%d秒后重启。
 voterestart.alreadyVoted=你已经投过票了！！
+voterestart.devoteInfo=%s 离开了游戏，现在还有%d票。
