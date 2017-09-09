@@ -1,6 +1,5 @@
 package com.seraphjack.voterestart.items;
 
-import com.seraphjack.voterestart.AchievementLoader;
 import com.seraphjack.voterestart.VoteRestart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,7 +23,6 @@ public class ItemVoter extends Item {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
-            player.triggerAchievement(AchievementLoader.saltyfish);
             if (!player.isSneaking())
                 VoteRestart.vote(player);
             else

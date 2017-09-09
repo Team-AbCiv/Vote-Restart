@@ -15,7 +15,7 @@ public class ConfigLoader {
 
     public static void load() {
         String comment;
-        comment = "How many players vote restart to restart.(%)";
+        comment = "How many player vote restart to restart.(%)";
         votes = (double) config.get(Configuration.CATEGORY_GENERAL, "votePercent", 50, comment).getInt() / 100;
         config.save();
     }

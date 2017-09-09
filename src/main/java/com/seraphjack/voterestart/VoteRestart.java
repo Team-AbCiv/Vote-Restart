@@ -2,13 +2,14 @@ package com.seraphjack.voterestart;
 
 import com.seraphjack.voterestart.event.EventLoader;
 import com.seraphjack.voterestart.items.ItemLoader;
+import com.seraphjack.voterestart.network.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.FakePlayer;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public class VoteRestart {
     private static Logger logger;
     private static int votes;
     private static List<String> voteList;
-    private static MinecraftServer server;
+    public static MinecraftServer server;
     private static boolean isRestarting = false;
 
     @Mod.EventHandler
@@ -34,6 +35,7 @@ public class VoteRestart {
         logger.info("Vote Restart loaded");
         new ConfigLoader(e);
         new ItemLoader();
+        new NetworkLoader();
     }
 
     @Mod.EventHandler
@@ -45,7 +47,6 @@ public class VoteRestart {
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         new CraftingLoader();
-        new AchievementLoader();
         new EventLoader();
     }
 
@@ -55,27 +56,28 @@ public class VoteRestart {
             return;
         }
 
-        int i;
-        for (i = 0; i < voteList.size(); i++) {
-            if (player.getGameProfile().getName().equals(voteList.get(i))) {
-                player.addChatMessage(new ChatComponentTranslation(StatCollector.translateToLocal("voterestart.alreadyVoted")));
-                if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes) && !isRestarting)
-                    restartServer();
+        for (String aVoteList : voteList) {
+            if (player.getGameProfile().getName().equals(aVoteList)) {
+                NetworkLoader.instance.sendTo(new MessageAlreadyVoted(), (EntityPlayerMP) player);
                 return;
             }
         }
+        MessageVoteInfo msg = new MessageVoteInfo();
+        msg.player = player.getGameProfile().getName();
+        NetworkLoader.instance.sendToAll(msg);
 
         voteList.add(player.getGameProfile().getName());
         votes++;
-        String info = player.getGameProfile().getName() + StatCollector.translateToLocal("voterestart.info.display0")
-                + votes + StatCollector.translateToLocal("voterestart.info.display1")
-                + server.getCurrentPlayerCount() + StatCollector.translateToLocal("voterestart.info.display2");
-        String info2 = StatCollector.translateToLocal("voterestart.info.display3")
-                + (int) Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes) + StatCollector.translateToLocal("voterestart.info.display4");
-        logger.info(info);
-        server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info));
-        server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(info2));
-        if (votes >= Math.ceil((double) server.getCurrentPlayerCount() * ConfigLoader.votes) && !isRestarting) {
+        update();
+    }
+
+    private static void update() {
+        MessageRestartInfo msg = new MessageRestartInfo();
+        msg.votesToRestart = ConfigLoader.votes;
+        msg.votes = votes;
+        msg.currentPlayers = server.getCurrentPlayerCount();
+        NetworkLoader.instance.sendToAll(msg);
+        if (Math.ceil(ConfigLoader.votes * votes) >= server.getCurrentPlayerCount()) {
             restartServer();
         }
     }
@@ -87,14 +89,20 @@ public class VoteRestart {
             public void run() {
                 int i = 10;
                 for (; i >= 0; i--) {
-                    server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.stopInfo", i)));
+                    MessageRestarting msg = new MessageRestarting();
+                    msg.seconds = i;
+                    NetworkLoader.instance.sendToAll(msg);
+                    logger.info(StatCollector.translateToLocalFormatted("voterestart.stopInfo", i));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                server.stopServer();
+                logger.info("Voted player list:");
+                for(String aVoteList : voteList)
+                    logger.info(aVoteList);
+                MinecraftServer.getServer().initiateShutdown();
             }
         }).start();
     }
@@ -106,7 +114,11 @@ public class VoteRestart {
             if (voteList.get(i).equals(player.getGameProfile().getName())) {
                 votes--;
                 voteList.remove(i);
-                server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.devoteInfo", player.getGameProfile().getName(), votes)));
+                MessageCancelVote msg = new MessageCancelVote();
+                msg.player = player.getGameProfile().getName();
+                msg.votes = votes;
+                NetworkLoader.instance.sendToAll(msg);
+                update();
             }
         }
     }
