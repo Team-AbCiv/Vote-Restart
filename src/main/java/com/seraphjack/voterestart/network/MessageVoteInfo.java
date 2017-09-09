@@ -1,11 +1,11 @@
 package com.seraphjack.voterestart.network;
 
-import com.seraphjack.voterestart.VoteRestart;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 
@@ -26,7 +26,7 @@ public class MessageVoteInfo implements IMessage {
 
         @Override
         public IMessage onMessage(MessageVoteInfo message, MessageContext ctx) {
-            VoteRestart.server.getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.playerVoteInfo",message.player)));
+            MinecraftServer.getServer().getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.playerVoteInfo",message.player)));
             return null;
         }
     }
