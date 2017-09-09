@@ -4,7 +4,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 
@@ -30,7 +30,7 @@ public class MessageRestartInfo implements IMessage {
     public static class MessageHandler implements IMessageHandler<MessageRestartInfo, IMessage> {
         @Override
         public IMessage onMessage(MessageRestartInfo message, MessageContext ctx) {
-            MinecraftServer.getServer().getConfigurationManager().sendChatMsg(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.info.voteInfo", ((double)message.votes/(double)message.currentPlayers *100),message.votesToRestart*100)));
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentTranslation(StatCollector.translateToLocalFormatted("voterestart.info.voteInfo", ((double)message.votes/(double)message.currentPlayers *100),message.votesToRestart*100)));
             return null;
         }
     }

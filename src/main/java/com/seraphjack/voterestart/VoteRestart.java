@@ -40,8 +40,8 @@ public class VoteRestart {
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent e) {
-        server = e.getServer();
         voteList = new LinkedList<String>();
+        server = e.getServer();
     }
 
     @Mod.EventHandler
@@ -77,7 +77,7 @@ public class VoteRestart {
         msg.votes = votes;
         msg.currentPlayers = server.getCurrentPlayerCount();
         NetworkLoader.instance.sendToAll(msg);
-        if (Math.ceil(ConfigLoader.votes * votes) >= server.getCurrentPlayerCount()) {
+        if ((double)votes/(double)server.getCurrentPlayerCount() >= ConfigLoader.votes) {
             restartServer();
         }
     }
